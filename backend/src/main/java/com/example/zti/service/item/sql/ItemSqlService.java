@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.DataClassRowMapper;
-import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Service;
@@ -22,8 +21,10 @@ public class ItemSqlService {
 
     private static final String SELECT_ITEMS = readSqlQuery("sql/item/select_items.sql");
     private static final String INSERT_INTO_ITEMS = readSqlQuery("sql/item/insert_into_items.sql");
-    private static final String MODIFY_ITEM_QUANTITY = readSqlQuery("sql/item/modify_item_quantity.sql");;
-    private static final String SELECT_ITEMS_EXIST = readSqlQuery("sql/item/select_items_exist.sql");;
+    private static final String MODIFY_ITEM_QUANTITY = readSqlQuery("sql/item/modify_item_quantity.sql");
+    ;
+    private static final String SELECT_ITEMS_EXIST = readSqlQuery("sql/item/select_items_exist.sql");
+    ;
 
     private final NamedParameterJdbcOperations jdbcOperations;
 
@@ -67,7 +68,6 @@ public class ItemSqlService {
     }
 
 
-
     private MapSqlParameterSource insertItemParameterSource(
             MapSqlParameterSource parameterSource,
             String itemId,
@@ -84,9 +84,14 @@ public class ItemSqlService {
 
     public void modifyItem(String id, Integer quantity) {
         MapSqlParameterSource parameters = new MapSqlParameterSource().addValue("id", id);
-        parameters.addValue("quantity",quantity);
-
-        jdbcOperations.query(MODIFY_ITEM_QUANTITY, (RowCallbackHandler) parameters);
+        parameters.addValue("quantity", quantity);
+        try {
+            jdbcOperations.update(MODIFY_ITEM_QUANTITY, parameters);
+        } catch (DataAccessException e) {
+            log.error(
+                    "Unable to retrieve tracks due to an unexpected error message={}", e.getMessage(), e);
+            throw new InternalServerErrorProblem();
+        }
     }
 
     public List<ItemSqlRow> getItemsExist() {

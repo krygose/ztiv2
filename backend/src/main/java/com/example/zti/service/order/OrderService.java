@@ -6,9 +6,12 @@ import com.example.zti.service.order.dto.OrderDto;
 import com.example.zti.service.order.sql.OrderSqlService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class OrderService {
-    OrderSqlService orderSqlService;
+    private final OrderSqlService orderSqlService;
 
     public OrderService(OrderSqlService orderSqlService) {
         this.orderSqlService = orderSqlService;
@@ -19,11 +22,6 @@ public class OrderService {
     }
 
 
-
-//     public ContentDto<OrderDto> getOrders(){
-//         return new ContentDto<>(orderSqlService.getOrders().stream().map(OrderMapper::toOrderDto).toList());
-//     }
-
     public void createOrder(NewOrderDto newOrderDto){
         String id = String.format("%s.%s.%s", newOrderDto.personId(), ShortUuidGenerator.generateRandomString(4), "id");
         orderSqlService.createOrder(
@@ -31,16 +29,16 @@ public class OrderService {
                 newOrderDto.personId(),
                 newOrderDto.state()
         );
-//         return OrderMapper.toOrderDto(
-//                 id,
-//                 newOrderDto.personId(),
-//                 newOrderDto.state()
-//         );
+
     }
 
-    public OrderDto getOrderAll() {
-        return orderSqlService.getOrderAll().map(OrderMapper::toOrderDto).orElse(null);
+    public List<OrderDto> getOrderAll() {
+        return orderSqlService.getOrderAll()
+                .stream()
+                .map(OrderMapper::toOrderDto)
+                .collect(Collectors.toList());
     }
+
 
 
 }

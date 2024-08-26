@@ -4,19 +4,25 @@ import com.example.zti.service.order.dto.OrdersDto;
 import com.example.zti.service.order.sql.OrdersSqlService;
 import org.springframework.stereotype.Service;
 
-import java.util.stream.Stream;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrdersService {
 
+
+
     OrdersSqlService ordersSqlService;
 
-    public Stream<OrdersDto> getOrders() {
-        return ordersSqlService.getOrders().stream().map(OrdersMapper::toOrdersDto);
+    public OrdersService(OrdersSqlService ordersSqlService) {
+        this.ordersSqlService = ordersSqlService;
+    }
+    public List<OrdersDto> getOrders() {
+        return ordersSqlService.getOrders().stream().map(OrdersMapper::toOrdersDto).toList();
     }
 
-    public Stream<OrdersDto> getOrdersById(String ordersId) {
-        return ordersSqlService.getOrdersById(ordersId).stream().map(OrdersMapper::toOrdersDto);
+    public Optional<OrdersDto> getOrdersById(String ordersId) {
+        return ordersSqlService.getOrdersById(ordersId).stream().map(OrdersMapper::toOrdersDto).findFirst();
     }
 
     public void modifyState(String id) {

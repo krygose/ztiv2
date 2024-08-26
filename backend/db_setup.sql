@@ -34,3 +34,13 @@ CREATE TABLE list_items
     FOREIGN KEY (order_id) REFERENCES orders (id)
 );
 
+
+CREATE VIEW item_list AS
+SELECT
+    i.name AS name,
+    i.price AS price,
+    il.quantity AS quantity,
+    il.order_id AS order_id
+FROM
+    list_items AS il
+        LEFT JOIN item AS i ON i.id = il.item_id;

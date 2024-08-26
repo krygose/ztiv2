@@ -20,7 +20,7 @@ public class ListItemController {
     @PostMapping
     public void createListItem(@RequestBody NewListItemDto newListItemDto) {listItemService.addListItem(newListItemDto); }
 
-    @GetMapping("/list")
+    @GetMapping
     public List<ListItemDto> getListItem(){
         return listItemService.getListItems().content();
     }

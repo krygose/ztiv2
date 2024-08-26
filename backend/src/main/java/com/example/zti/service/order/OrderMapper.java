@@ -20,10 +20,10 @@ public record OrderMapper(ObjectMapper objectMapper) implements RowMapper<OrderS
     @Override
     public OrderSqlRow mapRow(ResultSet rs, int rowNum) throws SQLException {
         try {
-            return new OrderSqlRow (
-                rs.getBoolean("state"),
-                rs.getString("personId"),
-                extractListItemSqlRowList(rs.getString("items")));
+            return new OrderSqlRow(
+                    rs.getString("person_id"),
+                    rs.getBoolean("state"),
+                    extractListItemSqlRowList(rs.getString("items")));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -31,30 +31,28 @@ public record OrderMapper(ObjectMapper objectMapper) implements RowMapper<OrderS
 
     private List<ListItemSqlRow> extractListItemSqlRowList(String listItemSqlRowJsonString) throws JsonProcessingException {
         return listItemSqlRowJsonString == null
-            ? Collections.emptyList()
-            : Arrays.asList(
+                ? Collections.emptyList()
+                : Arrays.asList(
                 objectMapper.readValue(listItemSqlRowJsonString, ListItemSqlRow[].class)
-            );
+        );
     }
 
     public static OrderDto toOrderDto(OrderSqlRow orderSqlRow) {
         return new OrderDto(
-            orderSqlRow.personId(),
-            orderSqlRow.state(),
-            orderSqlRow.items().stream().map(OrderMapper::toItemDto).toList(),
-            orderSqlRow.items().stream()
+                orderSqlRow.personId(),
+                orderSqlRow.state(),
+                orderSqlRow.items().stream().map(OrderMapper::toItemDto).toList(),
+                orderSqlRow.items().stream()
                         .mapToDouble(item -> item.price() * item.quantity())
                         .sum());
     }
 
 
-
-
     private static ItemDto toItemDto(ListItemSqlRow listItemSqlRow) {
         return new ItemDto(
-            listItemSqlRow.name(),
-            listItemSqlRow.price(),
-            listItemSqlRow.quantity()
+                listItemSqlRow.name(),
+                listItemSqlRow.price(),
+                listItemSqlRow.quantity()
         );
     }
 }

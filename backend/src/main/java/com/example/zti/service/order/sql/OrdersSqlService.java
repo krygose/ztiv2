@@ -15,17 +15,18 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.example.zti.common.resource.ResourceManager.readSqlQuery;
+import static java.sql.JDBCType.VARCHAR;
 
 @Service
 public class OrdersSqlService {
     private static final Logger log = LoggerFactory.getLogger(OrderSqlService.class);
 
 
-
     private static final String SELECT_ORDERS = readSqlQuery("sql/order/select_orders.sql");
 
     private static final String SELECT_ORDERS_BY_ID = readSqlQuery("sql/order/select_orders_by_id.sql");
-    private static final String MODIFY_ORDER_STATE = readSqlQuery("sql/order/modify_order_state.sql");;
+    private static final String MODIFY_ORDER_STATE = readSqlQuery("sql/order/modify_order_state.sql");
+    ;
 
     private final OrdersMapper ordersMapper;
 
@@ -49,16 +50,26 @@ public class OrdersSqlService {
 
     public Optional<OrdersSqlRow> getOrdersById(String ordersId) {
         MapSqlParameterSource parameters = new MapSqlParameterSource().addValue("id", ordersId);
-
-        return
-                jdbcOperations.query(SELECT_ORDERS_BY_ID, parameters, ordersMapper)
-                        .stream().findFirst();
+        try {
+            return
+                    jdbcOperations.query(SELECT_ORDERS_BY_ID, parameters, DataClassRowMapper.newInstance(OrdersSqlRow.class))
+                            .stream().findFirst();
+        } catch (DataAccessException e) {
+            log.error(
+                    "Unable to retrieve tracks due to an unexpected error message={}", e.getMessage(), e);
+            throw new InternalServerErrorProblem();
+        }
     }
 
     public void modifyState(String id) {
-        MapSqlParameterSource parameters = new MapSqlParameterSource().addValue("id", id);
 
-        jdbcOperations.query(MODIFY_ORDER_STATE, parameters, ordersMapper);
-
+        MapSqlParameterSource parameters = new MapSqlParameterSource().addValue("id", id, VARCHAR.getVendorTypeNumber());
+        try {
+            jdbcOperations.update(MODIFY_ORDER_STATE, parameters);
+        } catch (DataAccessException e) {
+            log.error(
+                    "Unable to retrieve tracks due to an unexpected error message={}", e.getMessage(), e);
+            throw new InternalServerErrorProblem();
+        }
     }
 }

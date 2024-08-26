@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.example.zti.common.resource.ResourceManager.readSqlQuery;
@@ -38,12 +39,16 @@ public class OrderSqlService {
 
     public Optional<OrderSqlRow> getOrderById(String id) {
         MapSqlParameterSource parameters = new MapSqlParameterSource().addValue("id", id);
-
-        return
-            jdbcOperations.query(SELECT_ITEMS_BY_ORDER_ID, parameters, orderMapper)
-            .stream().findFirst();
+        try {
+            return
+                    jdbcOperations.query(SELECT_ITEMS_BY_ORDER_ID, parameters, orderMapper)
+                            .stream().findFirst();
+        } catch (DataAccessException e) {
+            log.error(
+                    "Unable to retrieve tracks due to an unexpected error message={}", e.getMessage(), e);
+            throw new InternalServerErrorProblem();
+        }
     }
-
 
 
     public void createOrder(
@@ -80,10 +85,15 @@ public class OrderSqlService {
         return parameterSource;
     }
 
-    public Optional<OrderSqlRow> getOrderAll() {
-        return
-                jdbcOperations.query(SELECT_ITEMS_BY_ORDER_ALL, orderMapper)
-                        .stream().findFirst();
+    public List<OrderSqlRow> getOrderAll() {
+        try {
+            return jdbcOperations.query(SELECT_ITEMS_BY_ORDER_ALL, orderMapper);
+        } catch (DataAccessException e) {
+            log.error(
+                    "Unable to retrieve tracks due to an unexpected error message={}", e.getMessage(), e);
+            throw new InternalServerErrorProblem();
+        }
+
     }
 
 

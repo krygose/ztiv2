@@ -21,13 +21,13 @@ public class ItemController {
         itemService.addItem(newItemDto);
     }
 
-    @PostMapping("/modifyItem")
-    public void modifyItem(@RequestBody String id, @RequestBody Integer quantity) {
+    @PutMapping("/{id}/modifyItem/{quantity}")
+    public void modifyItem(@PathVariable String id, @PathVariable Integer quantity) {
         itemService.modifyItem(id,quantity);
     }
 
 
-    @GetMapping("/item")
+    @GetMapping
     public List<ItemDto> getItems() {
         return itemService.getItems().content();
     }

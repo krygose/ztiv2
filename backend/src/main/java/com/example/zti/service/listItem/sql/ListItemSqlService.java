@@ -8,17 +8,18 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.DataClassRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 import static com.example.zti.common.resource.ResourceManager.readSqlQuery;
-
+@Service
 public class ListItemSqlService {
 
     private static final Logger log = LoggerFactory.getLogger(ListItemSqlService.class);
 
-    private static final String SELECT_LISTITEMS = readSqlQuery("sql/item/select_listitems.sql");
-    private static final String INSERT_INTO_LISTITEMS = readSqlQuery("sql/item/insert_into_listitems.sql");
+    private static final String SELECT_LISTITEMS = readSqlQuery("sql/listitem/select_listitems.sql");
+    private static final String INSERT_INTO_LISTITEMS = readSqlQuery("sql/listitem/insert_into_listitems.sql");
 
     private final NamedParameterJdbcOperations jdbcOperations;
 

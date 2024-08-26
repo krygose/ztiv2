@@ -22,7 +22,7 @@ FROM
     orders AS o
         LEFT JOIN item_list AS il ON o.id = il.order_id
 WHERE
-    o.id = :id and o.state = 1
+    o.id = :id and o.state = 0
 GROUP BY
     o.person_id, o.state
 LIMIT 1;

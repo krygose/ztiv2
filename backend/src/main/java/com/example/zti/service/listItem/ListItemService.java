@@ -25,10 +25,6 @@ public class ListItemService {
                 newListItemDto.person_order_id(),
                 newListItemDto.quantity()
         );
-//        return ListItemMapper.toListItemDto(
-//                newListItemDto.item_id(),
-//                newListItemDto.person_order_id(),
-//                newListItemDto.quantity()
-//        );
+
     }
 }

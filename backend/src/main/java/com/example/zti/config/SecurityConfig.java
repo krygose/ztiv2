@@ -1,17 +1,11 @@
 package com.example.zti.config;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import java.util.List;
-
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -34,6 +28,10 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -58,13 +56,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         auth ->
                                 auth.requestMatchers(
-                                                "/api/token",
-                                                "/api/tracks",
+                                                "/api/items/**",
                                                 "/api/users/register",
                                                 "/api/users/email",
-                                                "/api/services/**",
-                                                "/swagger-ui/**",
-                                                "/v3/**")
+                                                "/api/listItem/**",
+                                                "/api/orders/**",
+                                                "/api/order/**"
+                                        )
                                         .permitAll()
                                         .anyRequest()
                                         .authenticated())

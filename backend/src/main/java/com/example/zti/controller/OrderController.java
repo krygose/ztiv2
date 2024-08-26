@@ -1,26 +1,22 @@
 package com.example.zti.controller;
 
 import com.example.zti.service.order.OrderService;
-import com.example.zti.service.order.OrdersService;
 import com.example.zti.service.order.dto.NewOrderDto;
 import com.example.zti.service.order.dto.OrderDto;
-import com.example.zti.service.order.dto.OrdersDto;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.stream.Stream;
+import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api/orders")
+@RequestMapping(path = "/api/order")
 public class OrderController {
 
     private final OrderService orderService;
 
-    private final OrdersService ordersService;
 
-
-    OrderController(OrderService orderService, OrdersService ordersService) {
+    OrderController(OrderService orderService) {
         this.orderService = orderService;
-        this.ordersService = ordersService;
+
     }
 
      @PostMapping
@@ -35,28 +31,12 @@ public class OrderController {
 
 
 
-    @GetMapping("/{orderAll}")
-    public OrderDto getOrderAll() {
+    @GetMapping
+    public List<OrderDto> getOrderAll() {
         return orderService.getOrderAll();
     }
 
-    // nie wiem czy tak ?
-    @GetMapping("/{orders}")
-    public Stream<OrdersDto> getOrders() {
 
-        return ordersService.getOrders();
-    }
-
-    // nie wiem czy tak ?
-    @GetMapping("/{ordersId}")
-    public Stream<OrdersDto> getOrders(@PathVariable String ordersId) {
-        return ordersService.getOrdersById(ordersId);
-    }
-
-    @PostMapping("/modifyState")
-    public void modifyState(@PathVariable String id){
-        ordersService.modifyState(id);
-    }
 
 }
 

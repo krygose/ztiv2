@@ -4,4 +4,4 @@ SELECT
     i.price,
     i.quantity
 FROM
-    item AS i
+    item AS i;
