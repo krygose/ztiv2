@@ -1,6 +1,6 @@
 UPDATE orders
 SET
-    state = 0
+    state = 1
 
 WHERE
     id = :id;

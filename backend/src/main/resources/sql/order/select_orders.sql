@@ -4,4 +4,5 @@ SELECT
     o.state as state
 
 FROM
-    orders AS o;
+    orders AS o
+where o.state = 0;
