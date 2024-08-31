@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col justify-center text-white">
     <div class="mx-auto mt-10 flex pt-6 text-2xl">
-      <span>Welcoma back!</span>
+      <span>Welcome back!</span>
     </div>
     <form class="login-form z-2 mx-auto flex w-80 flex-col p-6" @submit.prevent="onSubmit">
       <div class="mx-auto my-2 flex w-full flex-col gap-4">

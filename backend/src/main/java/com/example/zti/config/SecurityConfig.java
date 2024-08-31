@@ -76,6 +76,7 @@ public class SecurityConfig {
                         auth ->
                                 auth.requestMatchers(
                                                 "/api/items/**",
+                                                "api/users/**",
                                                 "/api/users/register",
                                                 "/api/users/email",
                                                 "/api/listItem/**",
