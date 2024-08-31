@@ -7,47 +7,52 @@ export const useAuthStore = defineStore({
   id: 'auth',
   state: () => {
     return {
-      user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null,
-      token: localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token')) : '',
-      role: localStorage.getItem('role') ? JSON.parse(localStorage.getItem('role')) : null,
+      user: localStorage.getItem('user') ? localStorage.getItem('user') : null,
+      userId: localStorage.getItem('userId') ? localStorage.getItem('userId') : null,
+      token: localStorage.getItem('token') ? localStorage.getItem('token') : '',
+      role: localStorage.getItem('role') ? localStorage.getItem('role') : null,
       returnUrl: '/'
     }
   },
   actions: {
-    async login (email, password) {
+    async login(email, password) {
       const response = await axios.post('api/token', {
         email: email,
         password: password
       })
 
       if (response.status === 200) {
-        const token = await response.data['token']
-        localStorage.setItem('user', JSON.stringify(email))
-        localStorage.setItem('token', JSON.stringify(token))
+        console.log(response)
+        console.log(response.data['userId'])
+        localStorage.setItem('user', email)
+        localStorage.setItem('userId', response.data['userId'])
+        localStorage.setItem('token', response.data['token'])
         this.user = email
-        this.token = token
+        this.userId = response.data['userId']
+        this.token = response.data['token']
         isLoggedIn.value = true
         await this.fetchUser()
         router.push(this.returnUrl || '/')
       }
     },
-    async fetchUser () {
+    async fetchUser() {
       const response = await axios.get('api/users/user')
 
       if (response.status === 200) {
         const role = response.data['role']
-        localStorage.setItem('role', JSON.stringify(role))
+        localStorage.setItem('role', role)
         this.role = role
       }
     },
-    logout () {
+    logout() {
       this.user = null
+      this.userId = null
       this.token = ''
       this.role = ''
       localStorage.removeItem('user')
+      localStorage.removeItem('userId')
       localStorage.removeItem('token')
       localStorage.removeItem('role')
     }
   }
-}
-)
+})

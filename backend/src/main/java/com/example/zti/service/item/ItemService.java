@@ -14,11 +14,11 @@ public class ItemService {
         this.itemSqlService = itemService;
     }
 
-    public ContentDto<ItemDto> getItems(){
+    public ContentDto<ItemDto> getItems() {
         return new ContentDto<>(itemSqlService.getItems().stream().map(ItemMapper::toItemDto).toList());
     }
 
-    public void addItem(NewItemDto newItemDto){
+    public void addItem(NewItemDto newItemDto) {
         String id = newItemDto.name().toLowerCase();
         itemSqlService.addItem(
                 id,
@@ -26,7 +26,7 @@ public class ItemService {
                 newItemDto.price(),
                 newItemDto.quantity()
 
-    );
+        );
 //        return ItemMapper.toItemDto(
 //                id,
 //                newItemDto.name(),
@@ -35,10 +35,10 @@ public class ItemService {
     }
 
     public void modifyItem(String id, Integer quantity) {
-        itemSqlService.modifyItem(id,quantity);
+        itemSqlService.modifyItem(id, quantity);
     }
 
-    public ContentDto<ItemDto> getItemsExist(){
+    public ContentDto<ItemDto> getItemsExist() {
         return new ContentDto<>(itemSqlService.getItemsExist().stream().map(ItemMapper::toItemDto).toList());
     }
 }

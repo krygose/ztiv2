@@ -2,4 +2,5 @@ package com.example.zti.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record LoginMessage(@JsonProperty("token") String token) {}
+public record LoginMessage(@JsonProperty("token") String token,
+                           @JsonProperty("userId") String userId) {}

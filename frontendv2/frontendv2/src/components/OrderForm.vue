@@ -67,7 +67,7 @@ export default {
   methods: {
     async fetchAvailableItems() {
       try {
-        const response = await axios.get('http://localhost:8080/api/items')
+        const response = await axios.get('api/items')
         this.availableItems = response.data
       } catch (error) {
         console.error('Error fetching available items:', error)
@@ -82,30 +82,27 @@ export default {
     async submitOrder() {
       try {
         // Create the order with state set to 0
-        const orderResponse = await axios.post('http://localhost:8080/api/orders', {
-          personId: this.$store.state.userId, // Assuming you use Vuex for user state
-          state: 0
+
+        const orderResponse = await axios.post('/api/order', {
+          personId: localStorage.getItem('userId'),
+          state: 0,
+          itemList: this.items
         })
 
         // Get the created order ID from the response
-        const orderId = orderResponse.data.id
+        // const orderId = orderResponse.data.id
 
         // Prepare items to be linked to the created order
-        const listItems = this.items.map((item) => ({
-          personOrderId: orderId,
-          itemId: item.id,
-          quantity: item.quantity
-        }))
-
-        // Create list items
-        await axios.post('http://localhost:8080/api/items', listItems)
+        // const listItems = this.items.map((item) => ({
+        //   personOrderId: orderId,
+        //   itemId: item.id,
+        //   quantity: item.quantity
+        // }))
 
         alert('Order created successfully')
-        // Optionally, reset form or redirect
         this.items = [{ id: '', quantity: 1 }]
       } catch (error) {
         console.error('Error creating order:', error)
-        alert('Error creating order')
       }
     }
   }

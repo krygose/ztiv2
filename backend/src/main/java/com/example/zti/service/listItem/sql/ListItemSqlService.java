@@ -41,22 +41,19 @@ public class ListItemSqlService {
 
     public void addItem(
             String itemId,
-            String personId,
+            String orderId,
             Integer quantity) {
         MapSqlParameterSource parameterSource =
                 insertListItemParameterSource(
                         new MapSqlParameterSource(),
                         itemId,
-                        personId,
+                        orderId,
                         quantity);
 
         try {
             jdbcOperations.update(INSERT_INTO_LISTITEMS, parameterSource);
-        } catch (DuplicateKeyErrorProblem e) {
+        } catch (DuplicateKeyErrorProblem | DataAccessException e) {
             log.error("Unable to add track due to duplicate key error message={}", e.getMessage(), e);
-            throw new InternalServerErrorProblem();
-        } catch (DataAccessException e) {
-            log.error("Unable to add track due to an unexpected error message={}", e.getMessage(), e);
             throw new InternalServerErrorProblem();
         }
     }
@@ -66,10 +63,10 @@ public class ListItemSqlService {
     private MapSqlParameterSource insertListItemParameterSource(
             MapSqlParameterSource parameterSource,
             String itemId,
-            String personId,
+            String orderId,
             Integer quantity) {
-        parameterSource.addValue("id", itemId);
-        parameterSource.addValue("personId", personId);
+        parameterSource.addValue("itemId", itemId);
+        parameterSource.addValue("orderId", orderId);
         parameterSource.addValue("quantity", quantity);
 
         return parameterSource;

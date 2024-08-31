@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Service;
@@ -54,7 +55,7 @@ public class OrderSqlService {
     public void createOrder(
             String id,
             String personId,
-            Boolean state) {
+            Integer state) {
         MapSqlParameterSource parameterSource =
                 insertOrderParameterSource(
                         new MapSqlParameterSource(),
@@ -64,11 +65,11 @@ public class OrderSqlService {
 
         try {
             jdbcOperations.update(INSERT_INTO_ORDERS, parameterSource);
-        } catch (DuplicateKeyErrorProblem e) {
+        } catch (DuplicateKeyException e) {
             log.error("Unable to add track due to duplicate key error message={}", e.getMessage(), e);
-            throw new InternalServerErrorProblem();
+            throw new DuplicateKeyErrorProblem();
         } catch (DataAccessException e) {
-            log.error("Unable to add track due to an unexpected error message={}", e.getMessage(), e);
+            log.error("Unable to add track due to unexpected error message={}", e.getMessage(), e);
             throw new InternalServerErrorProblem();
         }
     }
@@ -77,7 +78,7 @@ public class OrderSqlService {
             MapSqlParameterSource parameterSource,
             String orderId,
             String personId,
-            Boolean state) {
+            Integer state) {
         parameterSource.addValue("id", orderId);
         parameterSource.addValue("personId", personId);
         parameterSource.addValue("state", state);

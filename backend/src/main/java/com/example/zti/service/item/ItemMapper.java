@@ -20,7 +20,7 @@ public record ItemMapper(ObjectMapper objectMapper) implements RowMapper<ItemSql
 
     public static ItemDto toItemDto(ItemSqlRow itemSqlRow){
         return new ItemDto(
-//                itemSqlRow.id(),
+                itemSqlRow.id(),
                 itemSqlRow.name(),
                 itemSqlRow.price(),
                 itemSqlRow.quantity());
@@ -33,7 +33,7 @@ public record ItemMapper(ObjectMapper objectMapper) implements RowMapper<ItemSql
             Integer quantity
     ){
         return new ItemDto(
-//                id,
+                id,
                 name,price,quantity);
     }
 }

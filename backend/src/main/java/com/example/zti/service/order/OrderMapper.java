@@ -50,6 +50,7 @@ public record OrderMapper(ObjectMapper objectMapper) implements RowMapper<OrderS
 
     private static ItemDto toItemDto(ListItemSqlRow listItemSqlRow) {
         return new ItemDto(
+                listItemSqlRow.id(),
                 listItemSqlRow.name(),
                 listItemSqlRow.price(),
                 listItemSqlRow.quantity()

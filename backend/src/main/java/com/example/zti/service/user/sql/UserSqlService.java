@@ -1,20 +1,14 @@
 package com.example.zti.service.user.sql;
 
 import com.example.zti.service.user.model.UserDto;
-import com.fasterxml.jackson.databind.util.Named;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.DataClassRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.springframework.jdbc.core.DataClassRowMapper;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
-import java.sql.*;
 
 import static com.example.zti.common.resource.ResourceManager.readSqlQuery;
 
@@ -30,12 +24,10 @@ public class UserSqlService {
             readSqlQuery("sql/User/select_user_by_email.sql");
 
     private final NamedParameterJdbcOperations jdbcOperations;
-    private final PasswordEncoder passwordEncoder;
 
     public UserSqlService(
-            NamedParameterJdbcOperations jdbcOperations, PasswordEncoder passwordEncoder) {
+            NamedParameterJdbcOperations jdbcOperations) {
         this.jdbcOperations = jdbcOperations;
-        this.passwordEncoder = passwordEncoder;
     }
 
     public Integer createUser(
@@ -53,7 +45,7 @@ public class UserSqlService {
                         firstName,
                         lastName,
                         email,
-                        passwordEncoder.encode(password),
+                        password,
                         role);
         try {
             return jdbcOperations.update(INSERT_INTO_USER, parameters);

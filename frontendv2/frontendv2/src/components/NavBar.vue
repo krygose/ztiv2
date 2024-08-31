@@ -65,7 +65,6 @@ export default {
             >
               <router-link to="/user/profile">Profile</router-link>
               <router-link to="/user/samochody">Samochody</router-link>
-              <router-link to="/laptime">Add Lap Time</router-link>
               <router-link
                 v-if="userRole === 'ADMIN' || userRole === 'EMPLOYEE'"
                 to="/user/kalendarz"
@@ -86,7 +85,6 @@ export default {
           </li>
         </ul>
         <ul v-else class="flex flex-col pl-10 pt-10 font-medium text-white">
-          <router-link to="/laptime">Add Lap Time</router-link>
           <router-link to="" @click="logout()">Log Out</router-link>
         </ul>
       </div>
@@ -96,8 +94,9 @@ export default {
 
 <script>
 import NavBarItem from '@/components/NavBarItem.vue'
-// import { useAuthStore } from '@/stores/auth'
+import { useAuthStore } from '@/stores/auth'
 import { isLoggedIn } from '@/authStatus'
+import { userRole } from '@/authStatus'
 
 export default {
   name: 'NavBar',
@@ -112,15 +111,13 @@ export default {
       urls: [{ id: 'login', name: 'Log In', url: '/login' }],
       loggedUrls: [
         // { id: 'profile', name: 'Profile', url: '/user' },
-        { id: 'addLaptime', name: 'Add Lap Time', url: '/laptime' },
         { id: 'logout', name: 'Log Out' }
       ],
-      showUserMenu: false,
-      userRole: null
+      showUserMenu: false
     }
   },
   created() {
-    this.userRole = JSON.parse(localStorage.getItem('role'))
+    this.userRole = localStorage.getItem('role')
   },
   methods: {
     toggleMenu() {
@@ -133,14 +130,16 @@ export default {
       const navbar = document.querySelector('#navbar')
 
       navbar.classList.toggle('bg-mcl-orange')
+    },
+    logout() {
+      useAuthStore().logout()
+      isLoggedIn.value = false
+      userRole.value = null
+      localStorage.removeItem('user')
+      localStorage.removeItem('userId')
+      localStorage.removeItem('token')
+      localStorage.removeItem('role')
     }
-    // },
-    // logout() {
-    //   useAuthStore().logout()
-    //   isLoggedIn.value = false
-    //   localStorage.removeItem('user')
-    //   localStorage.removeItem('token')
-    // }
   }
 }
 </script>

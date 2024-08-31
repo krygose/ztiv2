@@ -26,7 +26,6 @@ public class OrdersSqlService {
 
     private static final String SELECT_ORDERS_BY_ID = readSqlQuery("sql/order/select_orders_by_id.sql");
     private static final String MODIFY_ORDER_STATE = readSqlQuery("sql/order/modify_order_state.sql");
-    ;
 
     private final OrdersMapper ordersMapper;
 

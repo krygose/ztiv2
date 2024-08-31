@@ -20,7 +20,7 @@ create table orders
 (
     id        varchar(30) NOT NULL primary key,
     person_id varchar(30) NOT NULL,
-    state     integer         NOT NULL,
+    state     integer     NOT NULL,
     FOREIGN KEY (person_id) REFERENCES person (id)
 
 );

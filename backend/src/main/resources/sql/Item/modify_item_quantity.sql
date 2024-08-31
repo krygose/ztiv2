@@ -1,5 +1,5 @@
 UPDATE item
 SET
-    quantity = :quantity
+    quantity = quantity - :quantity
 WHERE
     id = :id;

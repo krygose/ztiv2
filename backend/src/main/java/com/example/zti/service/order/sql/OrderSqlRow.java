@@ -6,6 +6,6 @@ public record OrderSqlRow(
         String personId,
         Boolean state,
         List<ListItemSqlRow> items) {
-    public record ListItemSqlRow(String name, Double price, Integer quantity) {
+    public record ListItemSqlRow(String id,String name, Double price, Integer quantity) {
     }
 }

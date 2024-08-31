@@ -1,11 +1,16 @@
 package com.example.zti.config;
 
+import com.example.zti.service.user.model.UserDto;
+import com.example.zti.service.user.problem.EmailAddressNotFoundProblem;
+import com.example.zti.service.user.sql.UserSqlService;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,8 +21,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
@@ -37,6 +42,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
     private final RsaKeyProperties rsaKeys;
 
     public SecurityConfig(RsaKeyProperties rsaKeys) {
@@ -47,6 +53,19 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    public UserDetailsService user(UserSqlService userSqlService) {
+        return (username) -> {
+            UserDto userDto = userSqlService.getUserByEmail(username);
+            if (userDto == null)
+                throw new EmailAddressNotFoundProblem();
+            return User.withUsername(userDto.email())
+                    .password("{noop}" + userDto.password())
+                    .authorities("read")
+                    .build();
+        };
     }
 
     @Bean
@@ -61,7 +80,9 @@ public class SecurityConfig {
                                                 "/api/users/email",
                                                 "/api/listItem/**",
                                                 "/api/orders/**",
-                                                "/api/order/**"
+                                                "/api/order/**",
+                                                "/api/order",
+                                                "/api/token"
                                         )
                                         .permitAll()
                                         .anyRequest()
@@ -95,10 +116,10 @@ public class SecurityConfig {
         return new NimbusJwtEncoder(jwkSource);
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
