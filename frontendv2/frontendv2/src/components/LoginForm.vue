@@ -59,7 +59,6 @@ export default {
     onSubmit() {
       if (this.username !== '' && this.password !== '') {
         useAuthStore().login(this.username, this.password)
-        window.location.reload()
       }
     }
   }
